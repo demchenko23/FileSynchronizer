@@ -7,7 +7,7 @@ namespace FileSynchronizer.Core
 {
     public class FileManager : IFileManager
     {
-        public override void CopyOperation(string sourcePath, string destPath)
+        public void CopyOperation(string sourcePath, string destPath)
         {
             try
             {
@@ -20,7 +20,7 @@ namespace FileSynchronizer.Core
 
         }
 
-        public override void DeleteOperation(string path)
+        public void DeleteOperation(string path)
         {
             try
             {

@@ -2,10 +2,10 @@
 
 namespace FileSynchronizer.Core
 {
-    public class IFileManager
+    public interface IFileManager
     {
-        public virtual void CopyOperation(string sourcePath, string destPath) { }
+        void CopyOperation(string sourcePath, string destPath);
 
-        public virtual void DeleteOperation(string path) { }
+        void DeleteOperation(string path);
     }
 }
