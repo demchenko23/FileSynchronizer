@@ -4,8 +4,8 @@ namespace FileSynchronizer.Core
 {
     public interface IFileManager
     {
-        void CopyOperation(string sourcePath, string destPath);
+        void Copy(string sourcePath, string destPath);
 
-        void DeleteOperation(string path);
+        void Delete(string path);
     }
 }

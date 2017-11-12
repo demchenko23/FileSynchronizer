@@ -1,34 +1,59 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
+using System.IO.Abstractions;
 
 namespace FileSynchronizer.Core
 {
     public class FileManager : IFileManager
     {
-        public void CopyOperation(string sourcePath, string destPath)
+        private readonly IFileSystem _fileSystem;
+        public FileManager(): this(new FileSystem())
         {
+        }
+        public FileManager(IFileSystem fileSystem)
+        {
+            _fileSystem = fileSystem;
+        }
+
+        public void Copy(string sourceFilePath, string destDirectoryPath)
+        {
+            if (!_fileSystem.Directory.Exists(destDirectoryPath))
+            {
+                _fileSystem.Directory.CreateDirectory(destDirectoryPath);
+            }
+            var fileName = _fileSystem.Path.GetFileName(sourceFilePath);
+            var destFileName = _fileSystem.Path.Combine(destDirectoryPath, fileName);
             try
             {
-                File.Copy(sourcePath, destPath);
+                _fileSystem.File.Copy(sourceFilePath, destFileName);
             }
-            catch (Exception ex)
+            // Handle exception if the file was already exist.
+            catch (IOException e)
             {
-                System.Console.WriteLine(ex.Message);
+                throw;
             }
 
         }
 
-        public void DeleteOperation(string path)
+        public void Delete(string path)
         {
-            try
+            if (File.Exists(path))
+
             {
-                File.Delete(path);
-            }
-            catch (Exception ex)
-            {
-                System.Console.WriteLine(ex.Message);
+                try
+                {
+                    File.Delete(path);
+                }
+                //Handle exception if file already being opened by another process.
+                catch (IOException e)
+                {
+                    return;
+                }
+                //Handle exception if file is in read only mode.
+                catch (UnauthorizedAccessException e)
+                {
+                    return;
+                }
             }
         }
     }
