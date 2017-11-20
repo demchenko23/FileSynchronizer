@@ -1,10 +1,7 @@
-﻿using System;
+﻿using FileSynchronizer.Core;
 using NUnit.Framework;
-using FileSynchronizer.Core;
 using System.IO;
-using System.IO.Abstractions;
 using System.IO.Abstractions.TestingHelpers;
-
 
 namespace FileSynchronizer.UtitTests
 {
