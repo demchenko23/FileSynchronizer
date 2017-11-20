@@ -13,6 +13,6 @@
   </Target>
   
   <Target Name="Build">
-    <MSBuild Projects="FileSynchronizer.sln" Targets="Rebuild" Properties="OutDir=$(StageDir)\Debug"/>
+    <MSBuild Projects="FileSynchronizer.sln" Targets="Rebuild" Properties="OutDir=$(StageDir)\Debug;TreatWarningsAsErrors=true"/>
   </Target>
 </Project>
