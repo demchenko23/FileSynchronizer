@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace FileSynchronizer.Core
+﻿namespace FileSynchronizer.Core
 {
     public interface IFileManager
     {

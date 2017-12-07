@@ -1,94 +1,62 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.IO;
+﻿using System.IO;
 using System.IO.Abstractions;
 
 namespace FileSynchronizer.Core
 {
     internal sealed class Synchronizer : ISynchronizer
     {
-        private string [] _folders;
-        private string [] _files;
         private string _destinationFolder;
         private string _destinationFile;
         private string _sourceFolder;
         private string _sourceFile;
-        private IFileManager _fileManager;
+        private IFileSystem _fileSystem;
 
-        public Synchronizer(IFileManager fileManager)
+        public Synchronizer(IFileSystem fileSystem)
         {
-            _fileManager = fileManager;
-                //new FileManager(new FileSystem());
+            _fileSystem = fileSystem;
         }
 
-        public void Synchronize(string sourceDirectoryPath, string destinationDirectoryPath, bool isDeleteActive)
+        public void Synchronize(string sourceRootPath, string destinationRootPath, bool isDeleteActive)
         {
             if (isDeleteActive)
             {
-                SynchronizeDelete(sourceDirectoryPath, destinationDirectoryPath);
+                SynchronizeDelete(sourceRootPath, destinationRootPath);
             }
-            SynchronizeCopy(sourceDirectoryPath, destinationDirectoryPath);
+
+            SynchronizeCopy(sourceRootPath, destinationRootPath);
         }
 
-        private void SynchronizeCopy(string sourceDirectoryPath, string destinationDirectoryPath)
+        private void SynchronizeCopy(string sourceRootPath, string destinationRootPath)
         {
-            _folders = Directory.GetDirectories(sourceDirectoryPath);
-            _files = Directory.GetFiles(sourceDirectoryPath);
+            string[] files = _fileSystem.Directory.GetFiles(sourceRootPath, "*", SearchOption.AllDirectories);
 
-            if (_folders.Length > 0)
+            foreach (var file in files)
             {
-                foreach (var folder in _folders)
+                _destinationFile = file.Replace(sourceRootPath, destinationRootPath);
+                _destinationFolder = _fileSystem.Path.GetDirectoryName(_destinationFile);
+                if (!_fileSystem.Directory.Exists(_destinationFolder))
                 {
-                    _destinationFolder = Path.Combine(destinationDirectoryPath, Path.GetDirectoryName(folder));
-                    SynchronizeCopy(folder, _destinationFolder);
+                    _fileSystem.Directory.CreateDirectory(_destinationFolder);
                 }
-            }
-            if (_files.Length > 0)
-            {
-                foreach (var file in _files)
-                {
-                    _destinationFile = Path.Combine(destinationDirectoryPath, Path.GetFileName(file));
 
-                    if (File.Exists(_destinationFile))
-                    {
-                        return;
-                    }
-                    else
-                    {
-                        _fileManager.Copy(file, _destinationFile);
-                    }
+                if (!_fileSystem.File.Exists(_destinationFile))
+                {
+                    _fileSystem.File.Copy(file, _destinationFile);
                 }
             }
         }
 
-        private void SynchronizeDelete(string sourceDirectoryPath, string destinationDirectoryPath)
+        private void SynchronizeDelete(string sourceRootPath, string destinationRootPath)
         {
-            _folders = Directory.GetDirectories(destinationDirectoryPath);
-            _files = Directory.GetFiles(destinationDirectoryPath);
+            string[] files = _fileSystem.Directory.GetFiles(destinationRootPath, "*", SearchOption.AllDirectories);
 
-            if (_folders.Length > 0)
+            foreach (var file in files)
             {
-                foreach (var folder in _folders)
-                {
-                    _sourceFolder = Path.Combine(sourceDirectoryPath, Path.GetDirectoryName(folder));
-                    SynchronizeDelete(folder, _sourceFolder);
-                }
-            }
-            if (_files.Length > 0)
-            {
-                foreach (var file in _files)
-                {
-                    _sourceFile = Path.Combine(sourceDirectoryPath, Path.GetFileName(file));
+                _sourceFile = file.Replace(destinationRootPath, sourceRootPath);
 
-                    if (File.Exists(_sourceFile))
-                    {
-                        return;
-                    }
-                    else
-                    {
-                        _fileManager.Delete(file);
-                    }
+                if (!_fileSystem.File.Exists(_sourceFile))
+                {
+                    _fileSystem.File.Delete(file);
                 }
             }
         }

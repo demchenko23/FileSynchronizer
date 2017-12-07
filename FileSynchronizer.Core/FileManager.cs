@@ -1,10 +1,7 @@
-﻿using System;
-using System.IO;
-using System.IO.Abstractions;
+﻿using System.IO.Abstractions;
 
 namespace FileSynchronizer.Core
 {
-    
     internal sealed class FileManager : IFileManager
     {
         private readonly IFileSystem _fileSystem;

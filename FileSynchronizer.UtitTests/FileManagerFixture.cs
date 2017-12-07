@@ -1,9 +1,9 @@
-﻿using System;
-using NUnit.Framework;
-using FileSynchronizer.Core;
+﻿using FileSynchronizer.Core;
 using System.IO;
 using System.IO.Abstractions;
 using System.IO.Abstractions.TestingHelpers;
+using FileSynchronizer.Core;
+using NUnit.Framework;
 
 
 namespace FileSynchronizer.UtitTests
@@ -34,15 +34,13 @@ namespace FileSynchronizer.UtitTests
         {
             _fileManager.Copy(_sourceFilePath, _destFilePath);
             Assert.That(_mockFileSystem.File.Exists(_destFilePath), Is.True);
-
         }
 
         [Test]
         public void WhenFileExist_ExceptionShoudBeThrown()
         {
             _mockFileSystem.AddFile(_destFilePath, MockFileData.NullObject);
-            Assert.Throws<IOException>(()=> _fileManager.Copy(_sourceFilePath, _destDirPath));
-
+            Assert.Throws<IOException>(() => _fileManager.Copy(_sourceFilePath, _destDirPath));
         }
 
         [Test]
