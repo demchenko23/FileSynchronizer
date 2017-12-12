@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace FileSynchronizer.UnitTests2
+namespace FileSynchronizer.UnitTests
 {
     [TestFixture]
     public class SynchronizerFixture

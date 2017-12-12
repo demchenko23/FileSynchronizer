@@ -1,0 +1,9 @@
+﻿using System.Runtime.CompilerServices;
+
+<<<<<<< HEAD
+[assembly: InternalsVisibleTo("FileSynchronizer.UtitTests")]
+
+=======
+[assembly: InternalsVisibleTo("FileSynchronizer.UnitTests")]
+[assembly: InternalsVisibleTo("FileSynchronizer.UnitTests2")]
+>>>>>>> Fix Synchronizer class. Fix SynchronizerFixture and add new tests.
